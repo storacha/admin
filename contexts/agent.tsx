@@ -1,14 +1,13 @@
 'use client'
 
-import { useEffect, useState, createContext } from "react"
-
+import { useEffect, useState, createContext, type JSX } from "react"
 import type {
   ConnectionView,
   Principal,
 } from '@ucanto/interface'
 import { Service } from './service'
-import { Agent } from '@web3-storage/access/agent'
-import { StoreIndexedDB } from '@web3-storage/access/stores/store-indexeddb'
+import { Agent } from '@storacha/access/agent'
+import { StoreIndexedDB } from '@storacha/access/stores/store-indexeddb'
 import * as RSASigner from '@ucanto/principal/rsa'
 import * as Ucanto from '@ucanto/interface'
 import { useClient } from "@/hooks/service"

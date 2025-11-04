@@ -1,6 +1,7 @@
 'use client'
 
 import './globals.css'
+import type { JSX } from 'react'
 import { AgentProvider } from '@/contexts/agent'
 import { ServiceProvider } from '@/contexts/service'
 import Nav from '@/components/nav'

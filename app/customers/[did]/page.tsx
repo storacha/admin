@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import * as DidMailto from '@web3-storage/did-mailto'
+import * as DidMailto from '@storacha/did-mailto'
 
 import { useCustomer } from "@/hooks/customer"
 import { useRateLimitActions } from "@/hooks/rate-limit"

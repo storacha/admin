@@ -1,8 +1,8 @@
 'use client'
-import type { EmailAddress } from "@web3-storage/did-mailto/dist/src/types";
+import type { EmailAddress } from "@storacha/did-mailto";
 import { useState, useCallback, ChangeEvent, FormEvent } from "react"
 import { useRouter } from "next/navigation";
-import * as MailtoDid from '@web3-storage/did-mailto'
+import * as MailtoDid from '@storacha/did-mailto'
 import Link from "next/link";
 
 export default function Root () {

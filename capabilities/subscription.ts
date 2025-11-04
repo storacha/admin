@@ -1,5 +1,5 @@
 import { capability, struct, ok, Schema } from '@ucanto/validator'
-import { Utils, Customer } from '@web3-storage/capabilities'
+import { Utils, Customer } from '@storacha/capabilities'
 
 const { equal, equalWith, and } = Utils
 const { ProviderDID } = Customer
