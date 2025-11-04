@@ -1,6 +1,6 @@
-# w3admin 
+# admin 
 
-Administrative tools for w3up.
+Administrative tools for storacha.network.
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Learn More
 
-`w3admin` is built with Next.js. To learn more about Next.js, take a look at the following resources:
+`admin` is built with Next.js. To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
