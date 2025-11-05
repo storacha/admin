@@ -6,10 +6,12 @@ import { useConsumer } from "@/hooks/consumer"
 import { useRateLimitActions, useRateLimits } from "@/hooks/rate-limit"
 import { DIDKey } from "@ucanto/interface"
 import Link from "next/link"
+import { use } from "react"
 
 export const runtime = 'edge'
 
-export default function Space ({ params: { did: encodedDid } }: { params: { did: string } }) {
+export default function Space (props: { params: Promise<{ did: string }> }) {
+  const {did: encodedDid} = use(props.params)
   const did = decodeURIComponent(encodedDid)
   const { data: space, error, isLoading } = useConsumer(did as DIDKey)
   const { addBlock, removeBlock, blocked } = useRateLimitActions(did)
