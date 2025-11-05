@@ -6,6 +6,12 @@ on:
   pull_request:
     branches:
       - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   test:
     uses: ./.github/workflows/test.yml
@@ -14,8 +20,6 @@ jobs:
     needs:
       - test
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/pnpm
@@ -62,7 +66,7 @@ jobs:
     outputs:
       releases_created: ${{ steps.tag-release.outputs.releases_created }}
     steps:
-      - uses: GoogleCloudPlatform/release-please-action@v3
+      - uses: GoogleCloudPlatform/release-please-action@v4
         id: tag-release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
