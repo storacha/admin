@@ -5,7 +5,6 @@ import { ServiceMethod, DIDKey, InferInvokedCapability } from '@ucanto/interface
 import * as Server from '@ucanto/server'
 import { CAR, HTTP } from '@ucanto/transport'
 import * as Ucanto from '@ucanto/interface'
-import * as Signer from '@ucanto/principal/ed25519'
 import { Admin, Customer, Consumer, Subscription, RateLimit } from '@storacha/capabilities'
 import { webDidFromMailtoDid } from '@/util/did'
 import { spaceOneDid, spaceTwoDid } from '@/util/spaces'
@@ -29,6 +28,7 @@ import {
   AdminStoreInspectFailure
 } from "@storacha/capabilities/types"
 import { Absentee } from "@ucanto/principal"
+import { useW3 } from "@storacha/ui-react"
 
 export type AccountDID = Ucanto.DID<'mailto'>
 
@@ -272,71 +272,19 @@ export async function createLocalServer (id: Ucanto.Signer) {
   })
 }
 
-const localServicePrincipalPrivateKey = process.env.NEXT_PUBLIC_SERVICE_PRIVATE_KEY
-const localServicePrincipalDid = process.env.NEXT_PUBLIC_SERVICE_DID
-
-async function createLocalService () {
-  const signer = localServicePrincipalPrivateKey ? Signer.parse(localServicePrincipalPrivateKey) : await Signer.generate()
-  const servicePrincipal = signer.withDID(localServicePrincipalDid ? localServicePrincipalDid as Ucanto.DID : 'did:web:dev.web3.storage')
-  return {
-    server: await createLocalServer(servicePrincipal),
-    servicePrincipal
-  }
-}
-
-interface RemoteServiceConfig {
-  name: string
-  local?: false
-  url: Ucanto.URI
-  did: Ucanto.DID
-}
-
-interface LocalServiceConfig {
-  name: string
-  local: true
-}
-
-type ServiceConfig = RemoteServiceConfig | LocalServiceConfig
-
-type ServiceConfigs = Record<string, ServiceConfig>
-
-const staticServiceConfigs: ServiceConfigs = {
-  local: { name: "Local", local: true },
-  travis: { name: "Travis", url: 'https://9bovsbxdii.execute-api.us-west-2.amazonaws.com', did: 'did:web:staging.web3.storage' }
-}
 interface ServiceContextValue {
   servicePrincipal?: Ucanto.Principal
-  server?: Server.Channel<Service>
 }
 
 export const ServiceContext = createContext<ServiceContextValue>({})
 
 export function ServiceProvider ({ children }: { children: JSX.Element | JSX.Element[] }) {
-  const [servicePrincipal, setServicePrincipal] = useState<Ucanto.Principal>()
-  const [server, setServer] = useState<Server.Channel<Service>>()
-  useEffect(function () {
-    async function load () {
-      if (process.env.NEXT_PUBLIC_USE_LOCAL_SERVICE === 'true') {
-        const { server, servicePrincipal } = await createLocalService()
-        setServicePrincipal(servicePrincipal)
-        setServer(server)
-      } else if (process.env.NEXT_PUBLIC_SERVICE_URL && process.env.NEXT_PUBLIC_SERVICE_DID) {
-        setServicePrincipal(Absentee.from({ id: process.env.NEXT_PUBLIC_SERVICE_DID as Ucanto.DID }))
-        setServer(HTTP.open({
-          url: new URL(process.env.NEXT_PUBLIC_SERVICE_URL),
-          method: 'POST',
-        }))
-      } else {
-        console.error("Service is not configured - please set NEXT_PUBLIC_SERVICE_URL and NEXT_PUBLIC_SERVICE_DID or set NEXT_PUBLIC_USE_LOCAL_SERVICE to 'true'")
-      }
-    }
-    load()
-  }, [])
+  const [{client}] = useW3()
+  const servicePrincipal = client?.agent.connection.id
 
   return (
     <ServiceContext.Provider value={{
       servicePrincipal,
-      server,
     }}>
       {children}
     </ServiceContext.Provider>

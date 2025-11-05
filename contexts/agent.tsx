@@ -1,74 +1,32 @@
-'use client'
+"use client";
 
-import { useEffect, useState, createContext, type JSX } from "react"
-import type {
-  ConnectionView,
-  Principal,
-} from '@ucanto/interface'
-import { Service } from './service'
-import { Agent } from '@storacha/access/agent'
-import { StoreIndexedDB } from '@storacha/access/stores/store-indexeddb'
-import * as RSASigner from '@ucanto/principal/rsa'
-import * as Ucanto from '@ucanto/interface'
-import { useClient } from "@/hooks/service"
-
-const DB_STORE_NAME = 'keyring'
-
-interface ServiceConfig {
-  servicePrincipal?: Principal
-  connection?: ConnectionView<Service>
-}
-
-interface CreateAgentOptions extends ServiceConfig {
-  principal?: Ucanto.Signer<Ucanto.DIDKey>
-  name?: string
-  connection?: ConnectionView<Service>
-}
-
-/**
- * Create an agent for managing identity. It uses RSA keys that are stored in
- * IndexedDB as unextractable `CryptoKey`s.
- */
-export async function createAgent (
-  options: CreateAgentOptions = { name: 'w3admin' }
-): Promise<Agent<Service>> {
-  const dbName = `${options.name}${options.servicePrincipal != null ? '@' + options.servicePrincipal.did() : ''
-    }`
-  const store = new StoreIndexedDB(dbName, {
-    dbVersion: 1,
-    dbStoreName: DB_STORE_NAME
-  })
-  const raw = await store.load()
-  if (raw != null) {
-    return Object.assign(Agent.from<Service>(raw, { ...options, store }), { store })
-  }
-  const principal = options.principal ?? await RSASigner.generate()
-  return Object.assign(
-    await Agent.create<Service>({ principal }, { ...options, store }),
-    { store }
-  )
-}
-
+import { createContext, type JSX } from "react";
+import { Service } from "./service";
+import { Agent } from "@storacha/access/agent";
+import { useW3 } from "@storacha/ui-react";
 interface AgentContextValue {
-  agent?: Agent<Service>
+  agent?: Agent<Service>;
 }
 
-export const AgentContext = createContext<AgentContextValue>({})
+export const AgentContext = createContext<AgentContextValue>({});
 
-export function AgentProvider ({ children }: { children: JSX.Element | JSX.Element[] }) {
-  const [agent, setAgent] = useState<Agent<Service>>()
-  const client = useClient()
-  useEffect(function () {
-    async function load () {
-      if (client) {
-        setAgent(await createAgent({ connection: client }))
-      }
-    }
-    load()
-  }, [client])
+export function AgentProvider({
+  children,
+}: {
+  children: JSX.Element | JSX.Element[];
+}) {
+  const [{ client }] = useW3();
+  const agent = client?.agent;
   return (
-    <AgentContext.Provider value={{ agent }}>
+    <AgentContext.Provider
+      value={{
+        // @ts-expect-error there's a mismatch between the service type of the agent from @storacha/ui-react and 
+        // the service defined in this app, but we can ignore it for now - the service
+        // really does implement everything we need
+        agent,
+      }}
+    >
       {children}
     </AgentContext.Provider>
-  )
+  );
 }

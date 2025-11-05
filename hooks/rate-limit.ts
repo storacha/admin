@@ -1,7 +1,7 @@
 import useSWR, { useSWRConfig } from 'swr'
 import { RateLimit } from '@storacha/capabilities'
-import { DID, Signer } from '@ucanto/interface'
-import { useClient, useServicePrincipal } from './service'
+import { DID } from '@ucanto/interface'
+import { useServicePrincipal } from './service'
 import { useAgent } from './agent'
 
 export function useRateLimitActions (subject: string | undefined) {

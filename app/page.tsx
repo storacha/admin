@@ -3,7 +3,6 @@ import type { EmailAddress } from "@storacha/did-mailto";
 import { useState, useCallback, ChangeEvent, FormEvent } from "react"
 import { useRouter } from "next/navigation";
 import * as MailtoDid from '@storacha/did-mailto'
-import Link from "next/link";
 
 export default function Root () {
   const router = useRouter();
