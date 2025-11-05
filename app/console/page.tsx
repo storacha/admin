@@ -27,13 +27,11 @@ export default function Console () {
   const agent = useAgent()
   const agentDID = agent?.did()
   const [delegations, setDelegations] = useState<Delegation<Capabilities>[]>([])
+  if (agent) {
+    setDelegations(agent.proofs())
+  }
   const [configuredServiceSigner, setConfiguredServiceSigner] = useState<Ucanto.Signer>()
   const [expiry, setExpiry] = useState<number>(30)
-  useEffect(function () {
-    if (agent) {
-      setDelegations(agent.proofs())
-    }
-  }, [agent])
   const { servicePrincipal } = useContext(ServiceContext)
 
   const serviceSigner = configuredServiceSigner || servicePrincipal as Ucanto.Signer | undefined

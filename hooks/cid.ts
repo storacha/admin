@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { DID } from '@ucanto/interface'
-import { Admin } from '@web3-storage/capabilities'
+import { Admin } from '@storacha/capabilities'
 import { useServicePrincipal } from './service'
 import { useAgent } from './agent'
 import { parseLink } from '@ucanto/core'

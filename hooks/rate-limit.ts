@@ -1,5 +1,5 @@
 import useSWR, { useSWRConfig } from 'swr'
-import { RateLimit } from '@web3-storage/capabilities'
+import { RateLimit } from '@storacha/capabilities'
 import { DID, Signer } from '@ucanto/interface'
 import { useClient, useServicePrincipal } from './service'
 import { useAgent } from './agent'

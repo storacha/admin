@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState, createContext } from "react"
+import { useEffect, useState, createContext, type JSX } from "react"
 import { ServiceMethod, DIDKey, InferInvokedCapability } from '@ucanto/interface'
 import * as Server from '@ucanto/server'
 import { CAR, HTTP } from '@ucanto/transport'
 import * as Ucanto from '@ucanto/interface'
 import * as Signer from '@ucanto/principal/ed25519'
-import { Admin, Customer, Consumer, Subscription, RateLimit } from '@web3-storage/capabilities'
+import { Admin, Customer, Consumer, Subscription, RateLimit } from '@storacha/capabilities'
 import { webDidFromMailtoDid } from '@/util/did'
 import { spaceOneDid, spaceTwoDid } from '@/util/spaces'
 import {
@@ -27,7 +27,7 @@ import {
   AdminUploadInspectFailure,
   AdminStoreInspectSuccess,
   AdminStoreInspectFailure
-} from "@web3-storage/capabilities/types"
+} from "@storacha/capabilities/types"
 import { Absentee } from "@ucanto/principal"
 
 export type AccountDID = Ucanto.DID<'mailto'>
@@ -164,6 +164,8 @@ const rateLimits: RateLimitRow[] = []
 export async function createLocalServer (id: Ucanto.Signer) {
   return Server.create<Service>({
     id,
+    // TODO: check revocations here
+    validateAuthorization: () => ({ ok: {} }),
     service: {
       customer: {
         get: Server.provide(Customer.get, async ({ capability }) => {
@@ -191,7 +193,9 @@ export async function createLocalServer (id: Ucanto.Signer) {
           if (spaces[did]) {
             return {
               ok: {
-                did, ...spaces[did]
+                did,
+                ...spaces[did],
+                customer: subscriptions[did].customer
               }
             }
           } else {
