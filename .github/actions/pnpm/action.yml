@@ -4,14 +4,8 @@ description: 'Setup node & pnpm'
 runs:
   using: 'composite'
   steps:
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v6
       with:
-        version: 8
-        run_install: |
-          - recursive: true
-            args: [--frozen-lockfile, --strict-peer-dependencies]
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        registry-url: 'https://registry.npmjs.org'
+        node-version: 24
         cache: 'pnpm'
