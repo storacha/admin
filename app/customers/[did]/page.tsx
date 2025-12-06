@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import * as DidMailto from "@storacha/did-mailto";
 
-import { useCustomer } from "@/hooks/customer";
+import { useCustomer, useCustomerUsage } from "@/hooks/customer";
 import { useRateLimitActions } from "@/hooks/rate-limit";
 import { SimpleError } from "@/components/error";
 import { Loader } from "@/components/brand";
@@ -33,6 +33,7 @@ export default function Customer(props: { params: Promise<{ did: string }> }) {
 
   console.log(did)
   const { data: customer, error, isLoading } = useCustomer(did);
+  const {data: usage} = useCustomerUsage(did)
   const {
     addBlock: addEmailBlock,
     removeBlock: removeEmailBlock,
@@ -99,6 +100,27 @@ export default function Customer(props: { params: Promise<{ did: string }> }) {
                         href={`/subscriptions/${subscriptionId}`}
                       >
                         {subscriptionId}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <h3 className="text-xl mb-2">Usage</h3>
+            <h4>{usage?.total} bytes</h4>
+            <table className="border-separate border-spacing-x-4">
+              <tbody>
+                {Object.entries(usage?.spaces || {}).map(([did, storage]) => (
+                  <tr key={did}>
+                    <td>
+                      {did}
+                    </td>
+                    <td>
+                      <Link
+                        className="underline text-blue-200"
+                        href={`/spaces/${did}`}
+                      >
+                        {storage.total}bytes
                       </Link>
                     </td>
                   </tr>

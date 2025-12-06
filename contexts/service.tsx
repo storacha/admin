@@ -25,7 +25,10 @@ import {
   AdminUploadInspectSuccess,
   AdminUploadInspectFailure,
   AdminStoreInspectSuccess,
-  AdminStoreInspectFailure
+  AdminStoreInspectFailure,
+  AccountUsageGet,
+  AccountUsageGetSuccess,
+  AccountUsageGetFailure
 } from "@storacha/capabilities/types"
 import { Absentee } from "@ucanto/principal"
 import { useW3 } from "@storacha/ui-react"
@@ -78,6 +81,15 @@ export interface Service {
       RateLimitListFailure
     >
   },
+  account: {
+    usage: {
+      get: ServiceMethod<
+        AccountUsageGet,
+        AccountUsageGetSuccess,
+        AccountUsageGetFailure
+      >
+    }
+  }
   admin: {
     upload: {
       inspect: ServiceMethod<

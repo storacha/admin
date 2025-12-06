@@ -26,10 +26,8 @@ async function toDelegation (car: Blob): Promise<Delegation> {
 export default function Console () {
   const agent = useAgent()
   const agentDID = agent?.did()
-  const [delegations, setDelegations] = useState<Delegation<Capabilities>[]>([])
-  if (agent) {
-    setDelegations(agent.proofs())
-  }
+  const [storedDelegations, setDelegations] = useState<Delegation<Capabilities>[]>([])
+  const delegations = storedDelegations ?? agent?.proofs() 
   const [configuredServiceSigner, setConfiguredServiceSigner] = useState<Ucanto.Signer>()
   const [expiry, setExpiry] = useState<number>(30)
   const { servicePrincipal } = useContext(ServiceContext)
@@ -48,6 +46,7 @@ export default function Console () {
           { with: servicePrincipal.did(), can: 'subscription/get' },
           { with: servicePrincipal.did(), can: 'rate-limit/*' },
           { with: servicePrincipal.did(), can: 'admin/*' },
+          { with: 'ucan:*', can: 'account/usage/get' },
         ],
         expiration: Math.floor(Date.now() / 1000) + (60 * expiry)
       })
@@ -92,7 +91,10 @@ export default function Console () {
   { with: '${servicePrincipal?.did()}', can: 'consumer/get' },
   { with: '${servicePrincipal?.did()}', can: 'subscription/get' },
   { with: '${servicePrincipal?.did()}', can: 'rate-limit/*' },
+  { with: '${servicePrincipal?.did()}', can: 'admin/*' },
+  { with: 'ucan:*', can: 'account/usage/get' },
 ]`
+
   return (
     <div className='flex flex-col items-center'>
       {

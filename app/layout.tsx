@@ -22,7 +22,7 @@ export default function RootLayout({
         <ServiceProvider>
           <AgentProvider>
             <html>
-              <body className="min-h-screen bg-slate-800 text-white">
+              <body className="min-h-screen bg-red-800 text-white">
                 <Nav />
                 <main className="grow text-white p-4">
                   <AuthenticationEnsurer>{children}</AuthenticationEnsurer>

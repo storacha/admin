@@ -9,14 +9,14 @@ import { MemoryDriver } from '@storacha/access/drivers/memory'
 const EXPIRY = 60 * 24 * 90
 
 // this must be run with the private key of the service passed as SERVICE_PRIVATE_KEY
-const servicePrincipal = process.env.SERVICE_PRIVATE_KEY ? Signer.parse(process.env.SERVICE_PRIVATE_KEY).withDID("did:web:up.storacha.network") : undefined
+const servicePrincipal = process.env.SERVICE_PRIVATE_KEY ? Signer.parse(process.env.SERVICE_PRIVATE_KEY) : undefined
 if (!servicePrincipal) throw new Error("Principal not defined, can't continue.")
 
 const delegateeEmail = process.argv[2] as `${string}@${string}`
 const delegateeDidMailto = DIDMailto.fromEmail(delegateeEmail)
 
-// @ts-expect-error type mismatch on the signer here, but it's fine
 const client = await create({ principal: servicePrincipal, store: new MemoryDriver() })
+console.log(servicePrincipal.toDIDKey())
 const delegation = await delegate({
   issuer: servicePrincipal,
   audience: Absentee.from({ id: delegateeDidMailto }),
@@ -30,10 +30,10 @@ const delegation = await delegate({
   ],
   expiration: Math.floor(Date.now() / 1000) + (60 * EXPIRY)
 })
-await client.capability.access.delegate({
+const result = await client.capability.access.delegate({
   // use the did:key of the service principal as the space to store the delegation in
   space: servicePrincipal.toDIDKey(),
   delegations: [delegation]
 })
 
-console.log(client)
+console.log(result)

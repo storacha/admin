@@ -19,7 +19,7 @@
     "@ipld/car": "^5.4.2",
     "@ipld/dag-ucan": "^3.4.5",
     "@storacha/access": "^1.6.2",
-    "@storacha/capabilities": "^1.10.0",
+    "@storacha/capabilities": "^1.12.0",
     "@storacha/client": "^1.8.12",
     "@storacha/did-mailto": "^1.0.2",
     "@storacha/ui-react": "^2.9.75",
